@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-
     private ListView mListView;
     private BaseAdapter adapter;
 
@@ -41,16 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
 
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                case R.id.navigation_recents:
                     return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
+                case R.id.navigation_users:
                     mListView.setAdapter(usersAdapter);
 
                     return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
+                case R.id.navigation_settings:
                     return true;
             }
             return false;
@@ -72,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
 //        mListView.setAdapter(usersAdapter);
 
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
