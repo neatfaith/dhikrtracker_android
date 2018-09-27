@@ -2,6 +2,7 @@ package com.neatfaith.dhikrtracker.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Holds item types like Adhkar, Fasting, Prayers etc
@@ -31,6 +32,20 @@ public class ItemType {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemType itemType = (ItemType) o;
+        return id == itemType.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return (int)getId();
     }
 
     @Override

@@ -2,13 +2,14 @@ package com.neatfaith.dhikrtracker.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ItemTypeSubItem {
 
     private long id;
     private String title;
     private String titleArabic;
-    private long typeId;
+    private ItemType type;
 
     public long getId() {
         return id;
@@ -34,12 +35,26 @@ public class ItemTypeSubItem {
         this.titleArabic = titleArabic;
     }
 
-    public long getTypeId() {
-        return typeId;
+    public ItemType getType() {
+        return type;
     }
 
-    public void setTypeId(long typeId) {
-        this.typeId = typeId;
+    public void setType(ItemType type) {
+        this.type = type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ItemTypeSubItem that = (ItemTypeSubItem) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return (int) getId();
     }
 
     @Override
@@ -49,7 +64,7 @@ public class ItemTypeSubItem {
         map.put("id",""+this.getId());
         map.put("title",this.getTitle());
         map.put("titleArabic",this.getTitleArabic());
-        map.put("typeId",""+this.getTypeId());
+        map.put("type",""+this.getType().toString());
 
         return map.toString();
     }

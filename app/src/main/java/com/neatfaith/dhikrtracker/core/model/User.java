@@ -5,6 +5,7 @@ import com.neatfaith.dhikrtracker.core.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  *  This is the user that we are recording the adhkar, fasting etc. We can keep records for multiple users.
@@ -54,6 +55,20 @@ public class User {
 
         //convert to readable timestamp
         this.createdTimestamp = Utils.timestampToTimeString(this.getCreated());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return (int) getId();
     }
 
     @Override

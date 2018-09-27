@@ -6,6 +6,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.neatfaith.dhikrtracker.App;
+import com.neatfaith.dhikrtracker.core.model.Item;
 import com.neatfaith.dhikrtracker.core.model.ItemType;
 import com.neatfaith.dhikrtracker.core.model.ItemTypeSubItem;
 import com.neatfaith.dhikrtracker.core.model.ResponseStatus;
@@ -16,12 +17,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DBManager {
 
     private static DBManager instance = null;
     private SQLHelper sqlHelper;
+
+    //stored in memory for easy querying foreign keys
+    private ArrayList<User> allUsers = new ArrayList<>();
+    private ArrayList<ItemType> allItemTypes = new ArrayList<>();
+    private ArrayList<ItemTypeSubItem> allSubItems = new ArrayList<>();
+
 
 
     public static DBManager getInstance() {
@@ -36,6 +44,10 @@ public class DBManager {
         super();
 
         sqlHelper = new SQLHelper(App.getContext());
+
+        this.getAllUsers(allUsers);
+        this.getAllItemTypes(allItemTypes);
+        this.getAllSubItems(allSubItems);
 
     }
 
@@ -104,6 +116,61 @@ public class DBManager {
         db.close();
 
         return status;
+
+    }
+
+    public synchronized void getAllItems(ArrayList<Item> items){
+
+        String query = "select * from item order by timestamp desc;";
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        while(c.moveToNext()){
+
+            long id = c.getLong(c.getColumnIndex("id"));
+            long subitem_id = c.getLong(c.getColumnIndex("subitem_id"));
+            long user_id = c.getLong(c.getColumnIndex("user_id"));
+            long tally = c.getLong(c.getColumnIndex("tally"));
+            long minutes = c.getLong(c.getColumnIndex("minutes"));
+            long timestamp = c.getLong(c.getColumnIndex("timestamp"));
+
+
+            User user = Utils.userForId(user_id,this.allUsers);
+            ItemTypeSubItem subitem = Utils.subItemForId(subitem_id,this.allSubItems);
+
+
+            Item m_item = new Item(id,subitem,user,tally,minutes,timestamp);
+
+
+            items.add(m_item);
+        }
+
+
+        db.close();
+
+    }
+
+    public synchronized void insertItem(long subitem_id,long user_id, long tally, long minutes, long timestamp){
+        SQLiteDatabase db = sqlHelper.getWritableDatabase();
+        db.beginTransaction();
+
+
+        ContentValues newValues = new ContentValues();
+        newValues.put("subitem_id", subitem_id);
+        newValues.put("user_id",user_id);
+        newValues.put("tally", tally);
+        newValues.put("minutes",minutes);
+        newValues.put("timestamp", timestamp);
+
+
+        db.insert("item", null, newValues);
+
+
+        //finish up and close db
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        db.close();
 
     }
 
@@ -194,9 +261,19 @@ public class DBManager {
 
     public synchronized void getSubItemsForType(ArrayList<ItemTypeSubItem> subitems, String typeId){
 
-        String query = "select * from item_type_subitems where type_id=? order by title asc;";
         SQLiteDatabase db = sqlHelper.getReadableDatabase();
-        Cursor c = db.rawQuery(query, new String[]{typeId});
+
+        String query = null;
+        Cursor c = null;
+        if (typeId == null){ //return all
+            query = "select * from item_type_subitems order by title asc;";
+            c = db.rawQuery(query, null);
+
+        }
+        else {
+            query = "select * from item_type_subitems where type_id=? order by title asc;";
+            c = db.rawQuery(query, new String[]{typeId});
+        }
 
         while(c.moveToNext()){
 
@@ -205,7 +282,12 @@ public class DBManager {
             subItem.setId(c.getLong(c.getColumnIndex("id")));
             subItem.setTitle(c.getString(c.getColumnIndex("title")));
             subItem.setTitleArabic(c.getString(c.getColumnIndex("title_arabic")));
-            subItem.setTypeId(c.getLong(c.getColumnIndex("type_id")));
+
+
+            //itemType
+            long type_id = c.getLong(c.getColumnIndex("type_id"));
+            ItemType type = Utils.itemTypeForId(type_id,allItemTypes);
+            subItem.setType(type);
 
 
 
@@ -217,6 +299,9 @@ public class DBManager {
 
     }
 
+    public synchronized void getAllSubItems(ArrayList<ItemTypeSubItem> subitems){
+        this.getSubItemsForType(subitems,null);
+    }
     public synchronized void insertItemTypeSubItems(JSONArray arr){
         SQLiteDatabase db = sqlHelper.getWritableDatabase();
         db.beginTransaction();

@@ -1,5 +1,10 @@
 package com.neatfaith.dhikrtracker.core.utils;
 
+import com.neatfaith.dhikrtracker.core.model.ItemType;
+import com.neatfaith.dhikrtracker.core.model.ItemTypeSubItem;
+import com.neatfaith.dhikrtracker.core.model.User;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Utils {
@@ -24,6 +29,45 @@ public class Utils {
 
         return Globals.getTimeFormatter().format(date);
 
+    }
+
+
+    public static User userForId(long id, ArrayList<User> users){
+
+        for (User user: users) {
+
+            if (user.getId() == id){
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+
+    public static ItemType itemTypeForId(long id, ArrayList<ItemType> itemTypes){
+
+        for (ItemType type: itemTypes) {
+
+            if (type.getId() == id){
+                return type;
+            }
+
+        }
+
+        return null;
+    }
+
+    public static ItemTypeSubItem subItemForId(long id, ArrayList<ItemTypeSubItem> subItems){
+
+        for (ItemTypeSubItem subitem: subItems) {
+
+            if (subitem.getId() == id){
+                return subitem;
+            }
+        }
+
+        return null;
     }
 
 }

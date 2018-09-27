@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.neatfaith.dhikrtracker.R;
+import com.neatfaith.dhikrtracker.adapter.ItemListAdapter;
 import com.neatfaith.dhikrtracker.adapter.UserListAdapter;
 import com.neatfaith.dhikrtracker.core.manager.DBManager;
 import com.neatfaith.dhikrtracker.core.model.Item;
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
-    private BaseAdapter adapter;
 
     private UserListAdapter usersAdapter;
+    private ItemListAdapter recentsAdapter;
 
     private ArrayList<Item> recentsArray = new ArrayList<>();
     private ArrayList<User> usersArray = new ArrayList<>();
@@ -35,17 +36,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-            mListView.setAdapter(null);
-
 
             switch (item.getItemId()) {
                 case R.id.navigation_recents:
+                    mListView.setAdapter(recentsAdapter);
+
                     return true;
                 case R.id.navigation_users:
                     mListView.setAdapter(usersAdapter);
 
                     return true;
                 case R.id.navigation_settings:
+                    mListView.setAdapter(null);
+
                     return true;
             }
             return false;
@@ -59,12 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
         //database
         DBManager.getInstance().getAllUsers(usersArray);
+        DBManager.getInstance().getAllItems(recentsArray);
 
         //listview
         mListView = (ListView) findViewById(R.id.main_listView);
 
         usersAdapter = new UserListAdapter(this,usersArray);
-//        mListView.setAdapter(usersAdapter);
+        recentsAdapter = new ItemListAdapter(this,recentsArray);
+        mListView.setAdapter(recentsAdapter);
 
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);

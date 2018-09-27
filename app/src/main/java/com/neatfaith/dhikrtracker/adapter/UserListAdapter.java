@@ -36,7 +36,7 @@ public class UserListAdapter extends BaseAdapter{
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
 

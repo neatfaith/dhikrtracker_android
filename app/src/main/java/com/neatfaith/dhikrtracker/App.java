@@ -4,10 +4,12 @@ import android.app.Application;
 import android.content.Context;
 
 import com.neatfaith.dhikrtracker.core.manager.DBManager;
+import com.neatfaith.dhikrtracker.core.model.Item;
 import com.neatfaith.dhikrtracker.core.model.ItemType;
 import com.neatfaith.dhikrtracker.core.model.ItemTypeSubItem;
 import com.neatfaith.dhikrtracker.core.model.ResponseStatus;
 import com.neatfaith.dhikrtracker.core.model.User;
+import com.neatfaith.dhikrtracker.core.utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,6 +105,17 @@ public class App extends Application{
 //        DBManager.getInstance().getSubItemsForType(subItems,"1");
 //
 //        System.out.println("SUBITEMS:"+subItems.toString());
+//
+//
+//        //items
+////        DBManager.getInstance().insertItem(1,1,150,0,Utils.getUnixTimestamp());
+////        DBManager.getInstance().insertItem(2,1,250,0,Utils.getUnixTimestamp());
+//
+//
+//        ArrayList<Item> items = new ArrayList<>();
+//        DBManager.getInstance().getAllItems(items);
+//        System.out.println("ITEMS:"+items.toString());
+//
 
 
     }
