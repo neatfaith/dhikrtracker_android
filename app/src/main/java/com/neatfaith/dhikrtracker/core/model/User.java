@@ -3,6 +3,7 @@ package com.neatfaith.dhikrtracker.core.model;
 
 import com.neatfaith.dhikrtracker.core.utils.Utils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -11,7 +12,7 @@ import java.util.Objects;
  *  This is the user that we are recording the adhkar, fasting etc. We can keep records for multiple users.
  */
 
-public class User {
+public class User implements Serializable {
 
     private long id;
     private String name;

@@ -1,10 +1,11 @@
 package com.neatfaith.dhikrtracker.core.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ItemTypeSubItem {
+public class ItemTypeSubItem implements Serializable {
 
     private long id;
     private String title;

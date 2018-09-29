@@ -67,7 +67,23 @@ public class App extends Application{
         //-----------------insert item type subitems
         String type_subitems = "[" +
                 "{'id': 1, 'title': 'Subhanallah', 'titleArabic' : 'سُبْحَنَ', 'typeId' : 1}," +
-                "{'id': 2, 'title': 'Alhamdulillah', 'titleArabic' : 'اَلحَمْدُ', 'typeId' : 1}" +
+                "{'id': 2, 'title': 'Alhamdulillah', 'titleArabic' : 'اَلحَمْدُ', 'typeId' : 1}," +
+
+                //fardh
+                "{'id': 3, 'title': 'Fajr', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 4, 'title': 'Dhuhr', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 5, 'title': 'Asr', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 6, 'title': 'Maghrib', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 7, 'title': 'Isha', 'titleArabic' : '', 'typeId' : 3}," +
+
+                //wajib
+                "{'id': 8, 'title': 'Witr', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 9, 'title': 'Eid-ul-Fitr', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 10, 'title': 'Eid-ul-Adha', 'titleArabic' : '', 'typeId' : 3}," +
+
+
+                "{'id': 11, 'title': 'Qiyam', 'titleArabic' : '', 'typeId' : 3}," +
+                "{'id': 12, 'title': 'Dhuha', 'titleArabic' : '', 'typeId' : 3}," +
 
                 "]";
 

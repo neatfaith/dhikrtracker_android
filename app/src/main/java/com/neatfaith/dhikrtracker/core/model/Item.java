@@ -1,12 +1,17 @@
 package com.neatfaith.dhikrtracker.core.model;
 
+import android.content.res.Resources;
+
+import com.neatfaith.dhikrtracker.App;
+import com.neatfaith.dhikrtracker.R;
 import com.neatfaith.dhikrtracker.core.utils.Utils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Item {
+public class Item implements Serializable {
 
     private long id;
     private ItemTypeSubItem subItem;
@@ -88,16 +93,17 @@ public class Item {
     public String getQuantity(){
 
         long type_id = this.getSubItem().getType().getId();
+        Resources res = App.getContext().getResources();
 
         if ( type_id == 1){ //Adhkar
 
-            return this.getTally()+" Times";
+            return String.format(res.getString(R.string.times_count),this.getTally());
         }
         else if (type_id == 4 || type_id == 5){ //Reading or writing
-            return this.getTally()+" Pages";
+            return String.format(res.getString(R.string.pages_count),this.getTally());
         }
         else if (type_id == 6){
-            return this.getMinutes()+" Minutes";
+            return String.format(res.getString(R.string.minutes_count),this.getTally());
         }
         else{
             return "";

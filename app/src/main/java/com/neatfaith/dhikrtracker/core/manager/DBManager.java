@@ -174,6 +174,10 @@ public class DBManager {
 
     }
 
+    public synchronized void insertItem(long subitem_id,long user_id, long tally, long minutes){
+        long timestamp = Utils.getUnixTimestamp();
+        insertItem(subitem_id, user_id, tally, minutes, timestamp);
+    }
 
     public synchronized void getAllItemTypes(ArrayList<ItemType> itemTypes){
 

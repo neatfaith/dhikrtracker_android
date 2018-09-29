@@ -1,5 +1,6 @@
 package com.neatfaith.dhikrtracker.core.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -8,7 +9,7 @@ import java.util.Objects;
  * Holds item types like Adhkar, Fasting, Prayers etc
  */
 
-public class ItemType {
+public class ItemType implements Serializable {
 
     private long id;
     private String title;

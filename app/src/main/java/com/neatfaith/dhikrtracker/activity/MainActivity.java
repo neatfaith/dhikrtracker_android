@@ -1,11 +1,15 @@
 package com.neatfaith.dhikrtracker.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,14 +45,18 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_recents:
                     mListView.setAdapter(recentsAdapter);
 
+                    //redraw actionbar
+                    invalidateOptionsMenu();
                     return true;
                 case R.id.navigation_users:
                     mListView.setAdapter(usersAdapter);
 
+                    invalidateOptionsMenu();
                     return true;
                 case R.id.navigation_settings:
                     mListView.setAdapter(null);
 
+                    invalidateOptionsMenu();
                     return true;
             }
             return false;
@@ -66,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         //listview
         mListView = (ListView) findViewById(R.id.main_listView);
+        mListView.setEmptyView(findViewById(R.id.empty_result));
 
         usersAdapter = new UserListAdapter(this,usersArray);
         recentsAdapter = new ItemListAdapter(this,recentsArray);
@@ -74,6 +83,52 @@ public class MainActivity extends AppCompatActivity {
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Inflate the menu items for the action bar
+
+        ListAdapter adapter = mListView.getAdapter();
+
+        //show add icon on items and users only
+        if (adapter != null && (adapter.equals(recentsAdapter) || adapter.equals(usersAdapter))){
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.main_activity_actions, menu);
+        }
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+
+        ListAdapter adapter = mListView.getAdapter();
+
+        switch (item.getItemId()) {
+            case R.id.action_add:
+
+                //if users tab is selected
+                if (adapter != null && adapter.equals(usersAdapter)){
+                    Intent intent = new Intent(this,AddUserActivity.class);
+                    startActivity(intent);
+                }
+
+                //if recents tab is selected
+                if (adapter != null && adapter.equals(recentsAdapter)){
+                    Intent intent = new Intent(this,ItemTypesListActivity.class);
+                    startActivity(intent);
+                }
+
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

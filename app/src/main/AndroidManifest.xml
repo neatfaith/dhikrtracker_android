@@ -19,6 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.AddUserActivity" />
+        <activity android:name=".activity.UserDetailActivity" />
+        <activity android:name=".activity.ItemTypesListActivity" />
+        <activity android:name=".activity.AddItemActivity"></activity>
     </application>
 
 </manifest>
