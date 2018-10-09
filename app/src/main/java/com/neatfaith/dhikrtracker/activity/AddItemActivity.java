@@ -1,47 +1,49 @@
 package com.neatfaith.dhikrtracker.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.neatfaith.dhikrtracker.R;
 import com.neatfaith.dhikrtracker.core.manager.DBManager;
+import com.neatfaith.dhikrtracker.core.model.Item;
 import com.neatfaith.dhikrtracker.core.model.ItemType;
 import com.neatfaith.dhikrtracker.core.model.ItemTypeSubItem;
 import com.neatfaith.dhikrtracker.core.model.User;
 import com.neatfaith.dhikrtracker.core.utils.ValidationUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class AddItemActivity extends AppCompatActivity {
 
-    EditText quantityEditText;
-    EditText subitemEditText;
-    EditText userEditText;
-
-
+    TextInputLayout quantityInputLayout;
+    TextInputEditText quantityEditText;
+    TextInputEditText subitemEditText;
+    TextInputEditText userEditText;
 
 
     Button cancelButton;
-    Button continueButton;
+    Button okButton;
 
     ArrayList<ItemTypeSubItem> subItems = new ArrayList<>();
-    ItemType itemType;
+    ArrayList<User> users = new ArrayList<>();
 
     AlertDialog selectSubitemDialog;
+    AlertDialog selectUserDialog;
+
     int selectedItem = -1;
-
-
-    ArrayList<User> users = new ArrayList<>();
     int selectedUser = -1;
 
-    AlertDialog selectUserDialog;
+    ItemType itemType;
+
+
 
 
     @Override
@@ -50,12 +52,34 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
 
-        quantityEditText = (EditText) findViewById(R.id.quantity_editText);
+        quantityEditText = (TextInputEditText) findViewById(R.id.quantity_editText);
+        quantityInputLayout = (TextInputLayout) findViewById(R.id.quantity_inputLayout);
 
         cancelButton = (Button) findViewById(R.id.add_item_cancelButton);
-        continueButton = (Button) findViewById(R.id.add_item_continueButton);
+        okButton = (Button) findViewById(R.id.add_item_okButton);
 
-        itemType = (ItemType) getIntent().getExtras().getSerializable("itemType");
+
+        if (savedInstanceState != null){
+            itemType = (ItemType) savedInstanceState.getSerializable("itemType");
+            selectedItem = savedInstanceState.getInt("selectedItem");
+            selectedUser = savedInstanceState.getInt("selectedUser");
+        }
+        else {
+            itemType = (ItemType) getIntent().getExtras().getSerializable("itemType");
+
+        }
+
+        String hint = getHintForItemId(itemType.getId());
+        quantityInputLayout.setHint(hint);
+
+        //Hide edittext for fasting
+        if (Item.isFastingId(itemType.getId())){
+            quantityEditText.setVisibility(View.GONE);
+
+        }
+
+
+
 
         //db
         DBManager.getInstance().getSubItemsForType(subItems,this.itemType.getId()+"");
@@ -63,7 +87,7 @@ public class AddItemActivity extends AppCompatActivity {
 
 
 
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -75,7 +99,14 @@ public class AddItemActivity extends AppCompatActivity {
                     return;
                 }
 
-                String quantity = quantityEditText.getText().toString();
+                String quantity = null;
+
+                if (Item.isFastingId(itemType.getId())){
+                    quantity = "0";
+                }
+                else {
+                    quantity = quantityEditText.getText().toString();
+                }
 
                 //Validation
                 boolean formValid = true;
@@ -115,6 +146,11 @@ public class AddItemActivity extends AppCompatActivity {
 
                     //then close
                     finish();
+
+                    Intent intent = new Intent(AddItemActivity.this,MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("tabId",R.id.navigation_recents);
+                    startActivity(intent);
                 }
 
 
@@ -164,7 +200,7 @@ public class AddItemActivity extends AppCompatActivity {
         // create the alert dialog
         selectSubitemDialog = builder.create();
 
-        subitemEditText = (EditText) findViewById(R.id.add_item_subitem);
+        subitemEditText = (TextInputEditText) findViewById(R.id.add_item_subitem);
 
 
         subitemEditText.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +243,7 @@ public class AddItemActivity extends AppCompatActivity {
         // create the alert dialog
         selectUserDialog = builder2.create();
 
-        userEditText = (EditText) findViewById(R.id.add_item_user);
+        userEditText = (TextInputEditText) findViewById(R.id.add_item_user);
 
         userEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +252,15 @@ public class AddItemActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("itemType",itemType);
+        outState.putInt("selectedItem",selectedItem);
+        outState.putInt("selectedUser",selectedUser);
     }
 
     private CharSequence[] getSubitemsForCurrentType() {
@@ -240,5 +285,30 @@ public class AddItemActivity extends AppCompatActivity {
         }
 
         return usersArray;
+    }
+
+    private String getHintForItemId(long itemTypeId){
+
+        if(Item.isAdhkarId(itemTypeId)){ //Adhkar
+            return getString(R.string.hint_count);
+        }
+        else if(Item.isFastingId(itemTypeId)){ //Fasting,  hide the edittext
+            return "";
+        }
+        else if(Item.isPrayerId(itemTypeId)){ //Prayers
+            return getString(R.string.hint_minutes);
+        }
+        else if(Item.isReadingId(itemTypeId)){ //Reading
+            return getString(R.string.hint_pages);
+        }
+        else if(Item.isWritingId(itemTypeId)){ //Writing
+            return getString(R.string.hint_pages);
+        }
+        else if(Item.isListeningId(itemTypeId)){ //Listening
+            return getString(R.string.hint_minutes);
+        }
+
+
+        return getString(R.string.hint_count_or_minutes);
     }
 }

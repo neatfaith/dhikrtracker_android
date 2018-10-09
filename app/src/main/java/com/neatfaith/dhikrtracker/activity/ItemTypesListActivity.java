@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 import com.neatfaith.dhikrtracker.R;
@@ -26,7 +25,7 @@ public class ItemTypesListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_types_list);
-        setTitle(R.string.select_one);
+        setTitle(R.string.select_category);
 
 
         mListView = (ListView) findViewById(R.id.itemtypes_listView);
@@ -40,17 +39,18 @@ public class ItemTypesListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent intent = new Intent(ItemTypesListActivity.this,AddItemActivity.class);
-                Bundle bundle = new Bundle();
+                Intent intent = new Intent();
 
                 ItemType type = itemTypes.get(position);
+
+                Bundle bundle = new Bundle();
                 bundle.putSerializable("itemType", type);
+
                 intent.putExtras(bundle);
 
-                startActivity(intent);
 
+                setResult(RESULT_OK,intent);
                 finish();
-
             }
         });
 

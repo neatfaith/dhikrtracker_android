@@ -4,6 +4,8 @@ import com.neatfaith.dhikrtracker.core.model.ItemType;
 import com.neatfaith.dhikrtracker.core.model.ItemTypeSubItem;
 import com.neatfaith.dhikrtracker.core.model.User;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -19,16 +21,19 @@ public class Utils {
 
         Date date = new Date(unixSeconds*1000L); // convert seconds to milliseconds
 
-        return Globals.getDateFormatter().format(date);
-
+        return DateFormat.getDateInstance().format(date);
     }
 
     public static String timestampToTimeString(long unixSeconds){
 
         Date date = new Date(unixSeconds*1000L); // convert seconds to milliseconds
 
-        return Globals.getTimeFormatter().format(date);
+        return DateFormat.getDateTimeInstance().format(date);
 
+    }
+
+    public static String formatNumber(long number){
+        return NumberFormat.getNumberInstance().format(number);
     }
 
 

@@ -3,8 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/icontext_icon"
+        android:layout_marginRight="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@mipmap/ic_launcher" />
+
     <TextView
-        android:id="@+id/title_textView"
+        android:id="@+id/icontext_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"

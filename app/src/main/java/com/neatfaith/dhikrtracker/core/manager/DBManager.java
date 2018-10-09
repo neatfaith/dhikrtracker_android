@@ -25,11 +25,6 @@ public class DBManager {
     private static DBManager instance = null;
     private SQLHelper sqlHelper;
 
-    //stored in memory for easy querying foreign keys
-    private ArrayList<User> allUsers = new ArrayList<>();
-    private ArrayList<ItemType> allItemTypes = new ArrayList<>();
-    private ArrayList<ItemTypeSubItem> allSubItems = new ArrayList<>();
-
 
 
     public static DBManager getInstance() {
@@ -44,10 +39,6 @@ public class DBManager {
         super();
 
         sqlHelper = new SQLHelper(App.getContext());
-
-        this.getAllUsers(allUsers);
-        this.getAllItemTypes(allItemTypes);
-        this.getAllSubItems(allSubItems);
 
     }
 
@@ -134,9 +125,14 @@ public class DBManager {
             long minutes = c.getLong(c.getColumnIndex("minutes"));
             long timestamp = c.getLong(c.getColumnIndex("timestamp"));
 
+            //Get the users for lookup
+            ArrayList<User> allUsers = new ArrayList<>();
+            ArrayList<ItemTypeSubItem> allSubItems = new ArrayList<>();
+            this.getAllUsers(allUsers);
+            this.getAllSubItems(allSubItems);
 
-            User user = Utils.userForId(user_id,this.allUsers);
-            ItemTypeSubItem subitem = Utils.subItemForId(subitem_id,this.allSubItems);
+            User user = Utils.userForId(user_id,allUsers);
+            ItemTypeSubItem subitem = Utils.subItemForId(subitem_id,allSubItems);
 
 
             Item m_item = new Item(id,subitem,user,tally,minutes,timestamp);
@@ -290,6 +286,10 @@ public class DBManager {
 
             //itemType
             long type_id = c.getLong(c.getColumnIndex("type_id"));
+
+            ArrayList<ItemType> allItemTypes = new ArrayList<>();
+            this.getAllItemTypes(allItemTypes);
+
             ItemType type = Utils.itemTypeForId(type_id,allItemTypes);
             subItem.setType(type);
 
@@ -317,14 +317,12 @@ public class DBManager {
             try{
                 JSONObject obj = arr.getJSONObject(i);
 
-                long id = obj.getLong("id");
                 String title = obj.getString("title");
                 String titleArabic = obj.getString("titleArabic");
                 long typeId = obj.getLong("typeId");
 
 
                 ContentValues newValues = new ContentValues();
-                newValues.put("id", id);
                 newValues.put("title",title);
                 newValues.put("title_arabic",titleArabic);
                 newValues.put("type_id", typeId);
@@ -339,6 +337,28 @@ public class DBManager {
                 e.printStackTrace();
             }
         }
+
+
+
+        //finish up and close db
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        db.close();
+
+    }
+
+    public synchronized void insertItemTypeSubItem(String title, long type_id){
+        SQLiteDatabase db = sqlHelper.getWritableDatabase();
+        db.beginTransaction();
+
+
+        ContentValues newValues = new ContentValues();
+        newValues.put("title",title);
+        newValues.put("type_id", type_id);
+
+        db.insert("item_type_subitems", null, newValues);
+
 
 
 

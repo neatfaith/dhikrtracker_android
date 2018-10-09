@@ -1,10 +1,11 @@
 package com.neatfaith.dhikrtracker.activity;
 
+import android.content.Intent;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.neatfaith.dhikrtracker.R;
 import com.neatfaith.dhikrtracker.core.manager.DBManager;
@@ -12,10 +13,10 @@ import com.neatfaith.dhikrtracker.core.utils.ValidationUtils;
 
 public class AddUserActivity extends AppCompatActivity {
 
-    EditText nameEditText;
+    TextInputEditText nameEditText;
 
     Button cancelButton;
-    Button continueButton;
+    Button okButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,13 +25,13 @@ public class AddUserActivity extends AppCompatActivity {
         setTitle(R.string.add_new_user);
 
 
-        nameEditText = (EditText) findViewById(R.id.add_user_name);
+        nameEditText = (TextInputEditText) findViewById(R.id.add_user_name);
 
         cancelButton = (Button) findViewById(R.id.add_user_cancelButton);
-        continueButton = (Button) findViewById(R.id.add_user_continueButton);
+        okButton = (Button) findViewById(R.id.add_user_okButton);
 
 
-        continueButton.setOnClickListener(new View.OnClickListener() {
+        okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -57,6 +58,11 @@ public class AddUserActivity extends AppCompatActivity {
 
                     //then close
                     finish();
+
+                    Intent intent = new Intent(AddUserActivity.this,MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("tabId",R.id.navigation_users);
+                    startActivity(intent);
                 }
 
 

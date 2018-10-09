@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="start"
             android:textStyle="bold"
             android:text="" />
 
@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="end"
             android:text="" />
     </LinearLayout>
 
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="start"
             android:textStyle="bold"
             android:textSize="19sp"
             android:text="" />
@@ -49,18 +49,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:gravity="right"
+            android:gravity="end"
             android:textSize="19sp"
-            android:text="0" />
+            android:text="" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/item_username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:gravity="left"
+        android:gravity="start"
         android:text="" />
 
 </LinearLayout>

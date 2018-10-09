@@ -18,8 +18,11 @@ public class Item implements Serializable {
     private User user;
 
 
-    private long tally; //count for adhkar, pages for writing or reading
-    private long minutes; //listening
+    private long tally = 0; //count for adhkar, pages for writing or reading
+    private long minutes = 0; //listening
+
+    private String formattedTally;
+
     private long timestamp;
     private String timestampString;
 
@@ -29,9 +32,9 @@ public class Item implements Serializable {
         this.id = id;
         this.subItem = subItem;
         this.user = user;
-        this.tally = tally;
         this.minutes = minutes;
 
+        this.setTally(tally);
         this.setTimestamp(timestamp);
     }
 
@@ -65,6 +68,12 @@ public class Item implements Serializable {
 
     public void setTally(long tally) {
         this.tally = tally;
+        this.formattedTally = Utils.formatNumber(tally);
+
+    }
+
+    public String getFormattedTally() {
+        return formattedTally;
     }
 
     public long getMinutes() {
@@ -95,20 +104,47 @@ public class Item implements Serializable {
         long type_id = this.getSubItem().getType().getId();
         Resources res = App.getContext().getResources();
 
-        if ( type_id == 1){ //Adhkar
+        if ( Item.isAdhkarId(type_id)){ //Adhkar
 
-            return String.format(res.getString(R.string.times_count),this.getTally());
+            return String.format(res.getString(R.string.times_count),this.getFormattedTally());
         }
-        else if (type_id == 4 || type_id == 5){ //Reading or writing
-            return String.format(res.getString(R.string.pages_count),this.getTally());
+        else if (Item.isReadingId(type_id) || Item.isWritingId(type_id)){ //Reading or writing
+            return String.format(res.getString(R.string.pages_count),this.getFormattedTally());
         }
-        else if (type_id == 6){
-            return String.format(res.getString(R.string.minutes_count),this.getTally());
+        else if (Item.isPrayerId(type_id) || Item.isListeningId(type_id)){
+            return String.format(res.getString(R.string.minutes_count),this.getFormattedTally());
         }
         else{
+
+            if (getTally() > 0){
+                return ""+getFormattedTally();
+            }
+            else if (getMinutes() > 0){
+                return ""+getMinutes();
+            }
+
             return "";
         }
 
+    }
+
+    public static boolean isAdhkarId(long id){
+        return id == 1;
+    }
+    public static boolean isFastingId(long id){
+        return id == 2;
+    }
+    public static boolean isPrayerId(long id){
+        return id == 3;
+    }
+    public static boolean isReadingId(long id){
+        return id == 4;
+    }
+    public static boolean isWritingId(long id){
+        return id == 5;
+    }
+    public static boolean isListeningId(long id){
+        return id == 6;
     }
 
     @Override

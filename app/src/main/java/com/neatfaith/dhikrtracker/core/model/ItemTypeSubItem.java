@@ -10,6 +10,7 @@ public class ItemTypeSubItem implements Serializable {
     private long id;
     private String title;
     private String titleArabic;
+    private String meaning;
     private ItemType type;
 
     public long getId() {
@@ -34,6 +35,14 @@ public class ItemTypeSubItem implements Serializable {
 
     public void setTitleArabic(String titleArabic) {
         this.titleArabic = titleArabic;
+    }
+
+    public String getMeaning() {
+        return meaning;
+    }
+
+    public void setMeaning(String meaning) {
+        this.meaning = meaning;
     }
 
     public ItemType getType() {
@@ -65,6 +74,7 @@ public class ItemTypeSubItem implements Serializable {
         map.put("id",""+this.getId());
         map.put("title",this.getTitle());
         map.put("titleArabic",this.getTitleArabic());
+        map.put("meaning",this.getMeaning());
         map.put("type",""+this.getType().toString());
 
         return map.toString();
