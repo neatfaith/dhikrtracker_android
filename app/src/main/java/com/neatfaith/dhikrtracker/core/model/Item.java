@@ -9,7 +9,6 @@ import com.neatfaith.dhikrtracker.core.utils.Utils;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Item implements Serializable {
 
@@ -106,13 +105,13 @@ public class Item implements Serializable {
 
         if ( Item.isAdhkarId(type_id)){ //Adhkar
 
-            return String.format(res.getString(R.string.times_count),this.getFormattedTally());
+            return res.getString(R.string.times_count,this.getFormattedTally());
         }
         else if (Item.isReadingId(type_id) || Item.isWritingId(type_id)){ //Reading or writing
-            return String.format(res.getString(R.string.pages_count),this.getFormattedTally());
+            return res.getString(R.string.pages_count,this.getFormattedTally());
         }
         else if (Item.isPrayerId(type_id) || Item.isListeningId(type_id)){
-            return String.format(res.getString(R.string.minutes_count),this.getFormattedTally());
+            return res.getString(R.string.minutes_count,this.getFormattedTally());
         }
         else{
 

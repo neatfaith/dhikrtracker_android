@@ -72,10 +72,7 @@ public class AddSubItemActivity extends AppCompatActivity {
                     Intent intent = new Intent(AddSubItemActivity.this,SubItemListActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("itemType",itemType);
-
-                    intent.putExtras(bundle);
+                    intent.putExtra("itemType",itemType);
                     startActivity(intent);
                 }
 

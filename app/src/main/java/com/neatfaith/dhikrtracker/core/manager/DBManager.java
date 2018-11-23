@@ -146,6 +146,42 @@ public class DBManager {
 
     }
 
+    public synchronized void getItemsForUserId(ArrayList<Item> items, long uid){
+
+        String query = "select * from item where user_id=? order by timestamp desc;";
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+        Cursor c = db.rawQuery(query, new String[]{""+uid});
+
+        while(c.moveToNext()){
+
+            long id = c.getLong(c.getColumnIndex("id"));
+            long subitem_id = c.getLong(c.getColumnIndex("subitem_id"));
+            long user_id = c.getLong(c.getColumnIndex("user_id"));
+            long tally = c.getLong(c.getColumnIndex("tally"));
+            long minutes = c.getLong(c.getColumnIndex("minutes"));
+            long timestamp = c.getLong(c.getColumnIndex("timestamp"));
+
+            //Get the users for lookup
+            ArrayList<User> allUsers = new ArrayList<>();
+            ArrayList<ItemTypeSubItem> allSubItems = new ArrayList<>();
+            this.getAllUsers(allUsers);
+            this.getAllSubItems(allSubItems);
+
+            User user = Utils.userForId(user_id,allUsers);
+            ItemTypeSubItem subitem = Utils.subItemForId(subitem_id,allSubItems);
+
+
+            Item m_item = new Item(id,subitem,user,tally,minutes,timestamp);
+
+
+            items.add(m_item);
+        }
+
+
+        db.close();
+
+    }
+
     public synchronized void insertItem(long subitem_id,long user_id, long tally, long minutes, long timestamp){
         SQLiteDatabase db = sqlHelper.getWritableDatabase();
         db.beginTransaction();

@@ -43,10 +43,7 @@ public class ItemTypesListActivity extends AppCompatActivity {
 
                 ItemType type = itemTypes.get(position);
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("itemType", type);
-
-                intent.putExtras(bundle);
+                intent.putExtra("itemType", type);
 
 
                 setResult(RESULT_OK,intent);

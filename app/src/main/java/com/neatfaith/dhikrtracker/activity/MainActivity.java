@@ -136,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
                 //users
                 else if (selectedTab == 1){
 
+                    User user = usersArray.get(position);
+                    Intent intent = new Intent(MainActivity.this,UserDetailActivity.class);
+
+                    intent.putExtra("user",user);
+                    startActivity(intent);
+
+
                 }
                 //more
                 else if (selectedTab == 2){

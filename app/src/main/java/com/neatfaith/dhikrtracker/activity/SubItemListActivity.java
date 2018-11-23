@@ -75,10 +75,7 @@ public class SubItemListActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(SubItemListActivity.this,AddSubItemActivity.class);
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("itemType",itemType);
-
-                intent.putExtras(bundle);
+                intent.putExtra("itemType",itemType);
                 startActivity(intent);
 
                 return true;

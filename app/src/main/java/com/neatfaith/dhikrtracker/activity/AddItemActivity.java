@@ -170,7 +170,7 @@ public class AddItemActivity extends AppCompatActivity {
         // ######## SUBITEM
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose an item");
+        builder.setTitle("Choose an Item");
 
         // add a radio button list
         CharSequence[] subitemsArr = this.getSubitemsForCurrentType();

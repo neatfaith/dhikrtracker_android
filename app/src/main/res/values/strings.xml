@@ -34,12 +34,40 @@
     <string name="add_modify_items">Add and Modify Items</string>
     <string name="help_and_support">Help and Support</string>
     <string name="about">About</string>
-    <string name="about_text">About text</string>
-    <string name="support_text">Support text</string>
 
     <string name="enter_title">Enter Title</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+
+
+    <string name="details_for">Details For %1$s</string>
+
+    <string name="about_text">
+        This is an android application that will help you improve different kinds of worship for you by tracking them.\n\n
+
+This application will make it easy for you to set goals on your worships.\n\n
+
+Lets say, you aim to say SubhanaAllah 1000 times everyday, it might look like a lot but if you break it down to 100 times before and after each prayer, it takes around 5 minutes for the 200 times total. This is just an example you can plan according to your own schedule.\n\n
+
+Each time you complete saying SubhanaAllah you record it to the application, at the end of the day you will be able to see your progress.\n\n
+
+You can do this to other kinds of worship like reading Quran or other religious books.\n\n
+
+These are the worships you can track.\n\n
+
+1. Adhkar (Dhikr)\n
+2. Fasting\n
+3. Prayers\n
+4. Reading\n
+5. Writing\n
+6. Listening\n\n
+
+The aim of the application is to help you be consistent in your worship by setting daily, weekly or monthly goals.\n\n
+        You will be surprised with how much you can accomplish with as little as 5 minutes of your time. The rewards of it in the Hereafter are great InshaAllah.\n\n</string>
+
+    <string name="support_text">We need you help to improve the application.\n\n
+
+If you have any issues, bugs or advice,\n\n Please feel free to send an email to neatfaith@gmail.com.</string>
 
 
 </resources>

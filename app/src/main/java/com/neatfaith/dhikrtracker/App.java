@@ -68,10 +68,14 @@ public class App extends Application{
         String type_subitems = "[" +
 
                 //################## ADHKAR
-                "{'title': 'Subhanallah', 'titleArabic' : 'سُبْحَنَ', 'typeId' : 1}," +
-                "{'title': 'Alhamdulillah', 'titleArabic' : 'اَلحَمْدُ', 'typeId' : 1}," +
-                "{'title': 'Subhaanal-laahi wa bihamdih Subhaanal-laahil-Adheem', 'titleArabic' : 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ', 'typeId' : 1}," +
-
+                "{'title': 'SubhanAllah', 'titleArabic' : '', 'typeId' : 1}," +
+                "{'title': 'Alhamdulillah', 'titleArabic' : '', 'typeId' : 1}," +
+                "{'title': 'Allahu Akbar', 'titleArabic' : '', 'typeId' : 1}," +
+                "{'title': 'La illaha ilAllah', 'titleArabic' : '', 'typeId' : 1}," +
+                "{'title': 'Astaghfirullah', 'titleArabic' : '', 'typeId' : 1}," +
+                "{'title': 'SubhanAllahi wa biHamdihi, Subhan-Allahi l-`adheem', 'titleArabic' : 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ', 'typeId' : 1}," +
+                "{'title': 'La Hawla wa la Quwatta illa Billah', 'titleArabic' : '', 'typeId' : 1}," +
+                "{'title': 'La illaha ilAllahu, waHdahu la shareeka lahu, lahul Mulku, wa lahul Hamd, wa Huwa ala kulli shaiy\\'in Qadeer', 'titleArabic' : '', 'typeId' : 1}," +
                 "{'title': 'Other', 'titleArabic' : '', 'typeId' : 1}," +
 
 
@@ -122,12 +126,21 @@ public class App extends Application{
                 "{'title': 'Sunan at-Tirmidhi', 'titleArabic' : '', 'typeId' : 4}," +
                 "{'title': 'Sunan an-Nasai', 'titleArabic' : '', 'typeId' : 4}," +
                 "{'title': 'Sunan Ibn Majah', 'titleArabic' : '', 'typeId' : 4}," +
+                "{'title': 'Notes', 'titleArabic' : '', 'typeId' : 4}," +
                 "{'title': 'Other', 'titleArabic' : '', 'typeId' : 4}," +
+
+
+
+                //################ WRITING
+                "{'title': 'Sermon (Khutbah)', 'titleArabic' : '', 'typeId' : 5}," +
+                "{'title': 'Notes', 'titleArabic' : '', 'typeId' : 5}," +
+                "{'title': 'Other', 'titleArabic' : '', 'typeId' : 5}," +
 
 
                 //################ LISTENING
                 //listening
                 "{'title': 'Quran Arabic', 'titleArabic' : '', 'typeId' : 6}," +
+                "{'title': 'Sermon (Khutbah)', 'titleArabic' : '', 'typeId' : 6}," +
                 "{'title': 'Other', 'titleArabic' : '', 'typeId' : 6}," +
 
 
