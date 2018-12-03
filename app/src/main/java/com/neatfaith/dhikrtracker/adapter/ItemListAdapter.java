@@ -85,7 +85,7 @@ public class ItemListAdapter extends BaseAdapter {
         holder.titleTextView.setText(item.getSubItem().getTitle());
         holder.timestampTextView.setText(item.getTimestampString());
         holder.quantityTextView.setText(item.getQuantity());
-        holder.usernameTextView.setText(item.getUser().getName());
+        holder.usernameTextView.setText(item.getUser() != null ? item.getUser().getName() : "" );
 
         return convertView;
     }

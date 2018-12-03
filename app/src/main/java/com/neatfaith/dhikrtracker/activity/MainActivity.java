@@ -1,5 +1,6 @@
 package com.neatfaith.dhikrtracker.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +34,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private ListView mListView;
+    private AlertDialog actionsDialog;
+    private int itemLongClickPosition = -1;
 
     private UserListAdapter usersAdapter;
     private ItemListAdapter recentsAdapter;
@@ -92,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null){
             selectedTabId = savedInstanceState.getInt("tabId",-1);
+            itemLongClickPosition = savedInstanceState.getInt("itemLongClickPosition",-1);
 
         }
         else {
@@ -166,6 +171,117 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //actions dialog
+        CharSequence[] actions = {getString(R.string.action_edit),getString(R.string.action_delete)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(R.string.select_action)
+                .setItems(actions, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int index) {
+
+                        if (itemLongClickPosition < 0){
+                            return;
+                        }
+
+
+                        int selectedTab = getSelectedTab();
+
+
+                        //recents
+                        if (selectedTab == 0){
+
+                            final Item item = recentsArray.get(itemLongClickPosition);
+                            if (index == 0){ //edit
+                                Intent intent = new Intent(MainActivity.this,AddItemActivity.class);
+                                intent.putExtra("itemToEdit",item);
+                                intent.putExtra("itemType",item.getSubItem().getType());
+
+                                startActivity(intent);
+
+                            }
+                            else if (index == 1){ //delete
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setMessage("Are you sure, you want to delete "+item.getSubItem().getTitle().toUpperCase() +"?")
+                                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                DBManager.getInstance().deleteItemWithId(item.getId());
+                                                notifyRecentItemsChanged();
+
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                // User cancelled the dialog
+                                            }
+                                        });
+                                // Create the AlertDialog object and show it
+                                builder.create().show();
+                            }
+
+                        }
+                        //users
+                        else if (selectedTab == 1){
+
+                            final User user = usersArray.get(itemLongClickPosition);
+                            if (index == 0){ //edit
+
+                                Intent intent = new Intent(MainActivity.this,AddUserActivity.class);
+                                intent.putExtra("userToEdit",user);
+
+                                startActivity(intent);
+
+                            }
+                            else if (index == 1){ //delete
+
+                                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                builder.setMessage("Are you sure, you want to delete "+user.getName().toUpperCase() +"?")
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+
+                                                DBManager.getInstance().deleteUserWithId(user.getId());
+
+                                                //foreign key relationship, we need to update both users and recents
+                                                notifyAllDataChanged();
+
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                // User cancelled the dialog
+                                            }
+                                        });
+                                // Create the AlertDialog object and show it
+                                builder.create().show();
+
+                            }
+
+                        }
+
+
+                    }
+                });
+        actionsDialog = builder.create();
+
+        mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                itemLongClickPosition = position;
+
+                int selectedTab = getSelectedTab();
+
+                // show dialog for recents & users
+                if (selectedTab == 0 || selectedTab == 1){
+                    actionsDialog.show();
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+
     }
 
     @Override
@@ -185,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
             tabId = R.id.navigation_settings;
         }
         outState.putInt("tabId",tabId);
+        outState.putInt("itemLongClickPosition",itemLongClickPosition);
 
     }
 
@@ -267,6 +384,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        notifyAllDataChanged();
+    }
+
     public int getSelectedTab(){
         ListAdapter adapter = mListView.getAdapter();
 
@@ -285,6 +409,24 @@ public class MainActivity extends AppCompatActivity {
         else{
             return -1;
         }
+
+    }
+
+    private void notifyRecentItemsChanged(){
+        recentsArray.clear();
+        DBManager.getInstance().getAllItems(recentsArray);
+        recentsAdapter.notifyDataSetChanged();
+    }
+
+    private void notifyAllDataChanged(){
+
+        usersArray.clear();
+        recentsArray.clear();
+        DBManager.getInstance().getAllUsers(usersArray);
+        DBManager.getInstance().getAllItems(recentsArray);
+
+        usersAdapter.notifyDataSetChanged();
+        recentsAdapter.notifyDataSetChanged();
 
     }
 }

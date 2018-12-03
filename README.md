@@ -1,4 +1,8 @@
 ## Dhikr Tracker Android
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png"
+      alt="Download from Google Play"
+      height="80">](https://play.google.com/store/apps/details?id=com.neatfaith.dhikrtracker)
+
 This is an android application that will help you improve different kinds of worship for you by tracking them. 
 Using this app you can track these kinds of worship(ibada)
 

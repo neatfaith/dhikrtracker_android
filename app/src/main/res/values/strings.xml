@@ -13,6 +13,7 @@
     <string name="minutes_count">%1$s Minutes</string>
 
     <string name="add_new_user">Add New User</string>
+    <string name="edit_user">Edit User</string>
     <string name="add">Add</string>
 
     <string name="Continue">Continue</string>
@@ -35,7 +36,15 @@
     <string name="help_and_support">Help and Support</string>
     <string name="about">About</string>
 
+    <string name="select_action">Select Action</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cant_edit_delete">You can\'t edit/delete this item. You can only edit/delete your own items</string>
+
+
+
     <string name="enter_title">Enter Title</string>
+    <string name="yes">Yes</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 

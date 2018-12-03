@@ -32,7 +32,11 @@ public class UserDetailActivity extends AppCompatActivity {
             user = (User) savedInstanceState.getSerializable("user");
         }
         else {
-            user = (User) getIntent().getExtras().getSerializable("user");
+
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null){
+                user = (User) bundle.getSerializable("user");
+            }
         }
 
         setTitle(getString(R.string.details_for,user.getName()));

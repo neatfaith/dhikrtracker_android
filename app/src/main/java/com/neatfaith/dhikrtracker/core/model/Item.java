@@ -165,8 +165,8 @@ public class Item implements Serializable {
 
         Map<String,String> map = new HashMap<>();
         map.put("id",""+this.getId());
-        map.put("user",this.getUser().toString());
-        map.put("subitem",this.getSubItem().toString());
+        map.put("user",this.getUser() != null ? this.getUser().toString() : "");
+        map.put("subitem",this.getSubItem() != null ? this.getSubItem().toString() : "");
         map.put("tally",""+this.getTally());
         map.put("minutes",""+this.getMinutes());
         map.put("timestamp",""+this.getTimestamp());

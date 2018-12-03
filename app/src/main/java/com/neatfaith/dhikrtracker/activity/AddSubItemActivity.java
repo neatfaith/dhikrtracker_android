@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.neatfaith.dhikrtracker.R;
 import com.neatfaith.dhikrtracker.core.manager.DBManager;
 import com.neatfaith.dhikrtracker.core.model.ItemType;
+import com.neatfaith.dhikrtracker.core.model.ItemTypeSubItem;
 import com.neatfaith.dhikrtracker.core.utils.ValidationUtils;
 
 public class AddSubItemActivity extends AppCompatActivity {
@@ -21,6 +22,8 @@ public class AddSubItemActivity extends AppCompatActivity {
 
     ItemType itemType;
 
+    ItemTypeSubItem subItemToEdit = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +32,15 @@ public class AddSubItemActivity extends AppCompatActivity {
 
         if (savedInstanceState != null){
             itemType = (ItemType) savedInstanceState.getSerializable("itemType");
+            subItemToEdit = (ItemTypeSubItem) savedInstanceState.getSerializable("subItemToEdit");
         }
         else {
-            itemType = (ItemType) getIntent().getExtras().getSerializable("itemType");
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null){
+                itemType = (ItemType) bundle.getSerializable("itemType");
+                subItemToEdit = (ItemTypeSubItem) bundle.getSerializable("subItemToEdit");
+
+            }
 
         }
 
@@ -41,6 +50,13 @@ public class AddSubItemActivity extends AppCompatActivity {
 
         cancelButton = (Button) findViewById(R.id.add_subitem_cancelButton);
         okButton = (Button) findViewById(R.id.add_subitem_okButton);
+
+
+        //editing
+        if (subItemToEdit != null){
+            titleEditText.append(subItemToEdit.getTitle());
+        }
+
 
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +80,14 @@ public class AddSubItemActivity extends AppCompatActivity {
                 if (formValid){
 
                     //continue adding to db
-                    DBManager.getInstance().insertItemTypeSubItem(title,itemType.getId());
+
+                    if (subItemToEdit != null){ //editing
+                        DBManager.getInstance().updateItemTypeSubItemWithId(subItemToEdit.getId(),title,itemType.getId());
+                    }
+                    else { //add new
+                        DBManager.getInstance().insertItemTypeSubItem(title,itemType.getId());
+
+                    }
 
                     //then close
                     finish();
@@ -93,5 +116,6 @@ public class AddSubItemActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable("itemType",itemType);
+        outState.putSerializable("subItemToEdit",subItemToEdit);
     }
 }

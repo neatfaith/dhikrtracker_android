@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.neatfaith.dhikrtracker.R;
 import com.neatfaith.dhikrtracker.core.manager.DBManager;
+import com.neatfaith.dhikrtracker.core.model.User;
 import com.neatfaith.dhikrtracker.core.utils.ValidationUtils;
 
 public class AddUserActivity extends AppCompatActivity {
@@ -18,17 +19,41 @@ public class AddUserActivity extends AppCompatActivity {
     Button cancelButton;
     Button okButton;
 
+    User userToEdit = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_user);
-        setTitle(R.string.add_new_user);
-
 
         nameEditText = (TextInputEditText) findViewById(R.id.add_user_name);
 
         cancelButton = (Button) findViewById(R.id.add_user_cancelButton);
         okButton = (Button) findViewById(R.id.add_user_okButton);
+
+        //state
+        if (savedInstanceState != null){
+            userToEdit = (User) savedInstanceState.getSerializable("userToEdit");
+        }
+        else {
+            Bundle bundle = getIntent().getExtras();
+
+            if (bundle != null){
+                userToEdit = (User) bundle.getSerializable("userToEdit");
+            }
+        }
+
+
+        if (userToEdit != null){ //editing
+            setTitle(R.string.edit_user);
+            nameEditText.append(userToEdit.getName());
+        }
+        else { //adding new user
+            setTitle(R.string.add_new_user);
+        }
+
+
+
 
 
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -53,7 +78,13 @@ public class AddUserActivity extends AppCompatActivity {
                 if (formValid){
 
                     //continue adding to db
-                    DBManager.getInstance().insertUser(name);
+                    if (userToEdit != null){ //update
+                        DBManager.getInstance().updateUserWithId(userToEdit.getId(),name);
+                    }
+                    else { //add new
+                        DBManager.getInstance().insertUser(name);
+                    }
+
 
 
                     //then close
@@ -76,6 +107,14 @@ public class AddUserActivity extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("userToEdit",userToEdit);
 
     }
 }

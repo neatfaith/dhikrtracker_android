@@ -12,6 +12,8 @@ public class ItemTypeSubItem implements Serializable {
     private String titleArabic;
     private String meaning;
     private ItemType type;
+    private boolean canModify;
+
 
     public long getId() {
         return id;
@@ -53,6 +55,19 @@ public class ItemTypeSubItem implements Serializable {
         this.type = type;
     }
 
+    public boolean canModify() {
+        return canModify;
+    }
+
+    public void setCanModify(int canModify) {
+
+        this.canModify = canModify > 0;
+    }
+
+    public void setCanModify(boolean canModify) {
+
+        this.canModify = canModify;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

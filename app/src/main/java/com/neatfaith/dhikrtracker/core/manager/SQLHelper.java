@@ -12,8 +12,8 @@ public class SQLHelper extends SQLiteOpenHelper {
     //create
     private static final String CREATE_TABLE_USER = "CREATE TABLE IF NOT EXISTS user(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE NOT NULL, created INTEGER);";
     private static final String CREATE_TABLE_ITEM_TYPE = "CREATE TABLE IF NOT EXISTS item_type(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT UNIQUE NOT NULL);";
-    private static final String CREATE_TABLE_ITEM_TYPE_SUBITEMS = "CREATE TABLE IF NOT EXISTS item_type_subitems(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, title_arabic TEXT, meaning TEXT, type_id INTEGER NOT NULL, UNIQUE(title,type_id), FOREIGN KEY('type_id') REFERENCES 'item_type'('id'));";
-    private static final String CREATE_TABLE_ITEM = "CREATE TABLE IF NOT EXISTS item(id INTEGER PRIMARY KEY AUTOINCREMENT, tally INTEGER, minutes INTEGER, subitem_id INTEGER, user_id INTEGER, timestamp INTEGER, FOREIGN KEY('subitem_id') REFERENCES 'item_type_subitems'('id'), FOREIGN KEY('user_id') REFERENCES 'user'('id') );";
+    private static final String CREATE_TABLE_ITEM_TYPE_SUBITEMS = "CREATE TABLE IF NOT EXISTS item_type_subitems(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, title_arabic TEXT, meaning TEXT, type_id INTEGER NOT NULL, can_modify INTEGER DEFAULT 1, UNIQUE(title,type_id), FOREIGN KEY('type_id') REFERENCES 'item_type'('id') ON DELETE CASCADE);";
+    private static final String CREATE_TABLE_ITEM = "CREATE TABLE IF NOT EXISTS item(id INTEGER PRIMARY KEY AUTOINCREMENT, tally INTEGER, minutes INTEGER, subitem_id INTEGER, user_id INTEGER, timestamp INTEGER, FOREIGN KEY('subitem_id') REFERENCES 'item_type_subitems'('id') ON DELETE CASCADE, FOREIGN KEY('user_id') REFERENCES 'user'('id') ON DELETE CASCADE );";
 
 
 
@@ -51,5 +51,15 @@ public class SQLHelper extends SQLiteOpenHelper {
 
         //onCreate(db);
 
+    }
+
+    @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+
+        String query = "PRAGMA foreign_keys = ON;";
+        db.rawQuery(query, null);
+
+        //db.setForeignKeyConstraintsEnabled(true);
     }
 }

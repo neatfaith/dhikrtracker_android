@@ -62,13 +62,13 @@ public class DBManager {
             users.add(m_user);
         }
 
+        c.close();
 
         db.close();
 
     }
 
-
-    public synchronized ResponseStatus insertUser(String name){
+    public synchronized ResponseStatus insertUser(String name,String uid){
         SQLiteDatabase db = sqlHelper.getWritableDatabase();
         db.beginTransaction();
 
@@ -76,6 +76,10 @@ public class DBManager {
         ContentValues newValues = new ContentValues();
         newValues.put("name",name);
         newValues.put("created", Utils.getUnixTimestamp());
+
+        if (uid != null){
+            newValues.put("id",uid);
+        }
 
         ResponseStatus status = new ResponseStatus();
         long code = 0;
@@ -110,6 +114,38 @@ public class DBManager {
 
     }
 
+    public synchronized ResponseStatus insertUser(String name){
+        return insertUser(name,null);
+    }
+
+    public synchronized int deleteUserWithId(long uid){
+
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        int status = db.delete("user","id=?",new String[]{""+uid});
+
+        db.close();
+
+        return status;
+
+    }
+
+    public synchronized int updateUserWithId(long uid,String name){
+
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        ContentValues newValues = new ContentValues();
+        newValues.put("name", name);
+
+        int status = db.update("user",newValues,"id=?",new String[]{""+uid});
+
+        db.close();
+
+        return status;
+
+    }
+
+
     public synchronized void getAllItems(ArrayList<Item> items){
 
         String query = "select * from item order by timestamp desc;";
@@ -141,6 +177,7 @@ public class DBManager {
             items.add(m_item);
         }
 
+        c.close();
 
         db.close();
 
@@ -177,6 +214,7 @@ public class DBManager {
             items.add(m_item);
         }
 
+        c.close();
 
         db.close();
 
@@ -211,6 +249,37 @@ public class DBManager {
         insertItem(subitem_id, user_id, tally, minutes, timestamp);
     }
 
+    public synchronized int deleteItemWithId(long uid){
+
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        int status = db.delete("item","id=?",new String[]{""+uid});
+
+        db.close();
+
+        return status;
+
+    }
+
+    public synchronized int updateItemWithId(long uid,long subitem_id,long user_id, long tally, long minutes){
+
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        ContentValues newValues = new ContentValues();
+        newValues.put("subitem_id", subitem_id);
+        newValues.put("user_id",user_id);
+        newValues.put("tally", tally);
+        newValues.put("minutes",minutes);
+
+
+        int status = db.update("item",newValues,"id=?",new String[]{""+uid});
+
+        db.close();
+
+        return status;
+
+    }
+
     public synchronized void getAllItemTypes(ArrayList<ItemType> itemTypes){
 
         String query = "select * from item_type order by id asc;";
@@ -228,6 +297,8 @@ public class DBManager {
             itemTypes.add(m_itemType);
         }
 
+
+        c.close();
 
         db.close();
 
@@ -266,12 +337,21 @@ public class DBManager {
             try{
                 JSONObject obj = arr.getJSONObject(i);
 
-                long id = obj.getLong("id");
-                String title = obj.getString("title");
 
                 ContentValues newValues = new ContentValues();
-                newValues.put("id", id);
-                newValues.put("title",title);
+
+                //id
+                if (obj.has("id")){
+                    long id = obj.getLong("id");
+                    newValues.put("id", id);
+                }
+
+                //title
+                if (obj.has("title")){
+                    String title = obj.getString("title");
+                    newValues.put("title",title);
+                }
+
 
                 db.insert("item_type", null, newValues);
 
@@ -318,7 +398,7 @@ public class DBManager {
             subItem.setId(c.getLong(c.getColumnIndex("id")));
             subItem.setTitle(c.getString(c.getColumnIndex("title")));
             subItem.setTitleArabic(c.getString(c.getColumnIndex("title_arabic")));
-
+            subItem.setCanModify(c.getInt(c.getColumnIndex("can_modify")));
 
             //itemType
             long type_id = c.getLong(c.getColumnIndex("type_id"));
@@ -334,6 +414,7 @@ public class DBManager {
             subitems.add(subItem);
         }
 
+        c.close();
 
         db.close();
 
@@ -353,18 +434,42 @@ public class DBManager {
             try{
                 JSONObject obj = arr.getJSONObject(i);
 
-                String title = obj.getString("title");
-                String titleArabic = obj.getString("titleArabic");
-                long typeId = obj.getLong("typeId");
-
-
                 ContentValues newValues = new ContentValues();
-                newValues.put("title",title);
-                newValues.put("title_arabic",titleArabic);
-                newValues.put("type_id", typeId);
+
+
+                //title
+                if (obj.has("title")){
+                    String title = obj.getString("title");
+                    newValues.put("title",title);
+                }
+
+                //titleArabic
+                if (obj.has("titleArabic")){
+                    String titleArabic = obj.getString("titleArabic");
+                    newValues.put("title_arabic",titleArabic);
+                }
+
+                //typeId
+                if (obj.has("typeId")){
+                    long typeId = obj.getLong("typeId");
+                    newValues.put("type_id", typeId);
+                }
+
+
+                //canModify
+                if (obj.has("canModify")){
+                    long canModify = obj.getLong("canModify");
+                    newValues.put("can_modify", canModify);
+                }
+
+                //meaning
+                if (obj.has("meaning")){
+                    String meaning = obj.getString("meaning");
+                    newValues.put("meaning", meaning);
+                }
+
 
                 db.insert("item_type_subitems", null, newValues);
-
 
 
 
@@ -403,6 +508,35 @@ public class DBManager {
         db.endTransaction();
 
         db.close();
+
+    }
+
+    public synchronized int deleteItemTypeSubItemWithId(long uid){
+
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        int status = db.delete("item_type_subitems","id=?",new String[]{""+uid});
+
+        db.close();
+
+        return status;
+
+    }
+
+    public synchronized int updateItemTypeSubItemWithId(long uid,String title, long type_id){
+
+        SQLiteDatabase db = sqlHelper.getReadableDatabase();
+
+        ContentValues newValues = new ContentValues();
+        newValues.put("title",title);
+        newValues.put("type_id", type_id);
+
+
+        int status = db.update("item_type_subitems",newValues,"id=?",new String[]{""+uid});
+
+        db.close();
+
+        return status;
 
     }
 

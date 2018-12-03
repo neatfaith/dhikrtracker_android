@@ -43,6 +43,7 @@ public class AddItemActivity extends AppCompatActivity {
 
     ItemType itemType;
 
+    Item itemToEdit = null;
 
 
 
@@ -54,6 +55,8 @@ public class AddItemActivity extends AppCompatActivity {
 
         quantityEditText = (TextInputEditText) findViewById(R.id.quantity_editText);
         quantityInputLayout = (TextInputLayout) findViewById(R.id.quantity_inputLayout);
+        subitemEditText = (TextInputEditText) findViewById(R.id.add_item_subitem);
+        userEditText = (TextInputEditText) findViewById(R.id.add_item_user);
 
         cancelButton = (Button) findViewById(R.id.add_item_cancelButton);
         okButton = (Button) findViewById(R.id.add_item_okButton);
@@ -61,11 +64,19 @@ public class AddItemActivity extends AppCompatActivity {
 
         if (savedInstanceState != null){
             itemType = (ItemType) savedInstanceState.getSerializable("itemType");
+            itemToEdit = (Item) savedInstanceState.getSerializable("itemToEdit");
+
             selectedItem = savedInstanceState.getInt("selectedItem");
             selectedUser = savedInstanceState.getInt("selectedUser");
         }
         else {
-            itemType = (ItemType) getIntent().getExtras().getSerializable("itemType");
+
+            Bundle bundle = getIntent().getExtras();
+            if (bundle != null){
+                itemType = (ItemType) bundle.getSerializable("itemType");
+                itemToEdit = (Item) bundle.getSerializable("itemToEdit");
+
+            }
 
         }
 
@@ -85,6 +96,16 @@ public class AddItemActivity extends AppCompatActivity {
         DBManager.getInstance().getSubItemsForType(subItems,this.itemType.getId()+"");
         DBManager.getInstance().getAllUsers(users);
 
+
+        //if we are editing
+        if (itemToEdit != null){
+            selectedItem = indexOfSubItem(subItems,itemToEdit.getSubItem());
+            selectedUser = indexOfUser(users,itemToEdit.getUser());
+
+            quantityEditText.append(itemToEdit.getQuantity());
+            subitemEditText.setText(itemToEdit.getSubItem().getTitle());
+            userEditText.setText(itemToEdit.getUser().getName());
+        }
 
 
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -140,7 +161,16 @@ public class AddItemActivity extends AppCompatActivity {
                     ItemTypeSubItem subItem = subItems.get(selectedItem);
                     User user = users.get(selectedUser);
 
-                    DBManager.getInstance().insertItem(subItem.getId(),user.getId(),Long.parseLong(quantity),0);
+
+                    if (itemToEdit != null){ //edit
+                        DBManager.getInstance().updateItemWithId(itemToEdit.getId(),subItem.getId(),user.getId(),Long.parseLong(quantity),0);
+
+                    }
+                    else { //new item
+                        DBManager.getInstance().insertItem(subItem.getId(),user.getId(),Long.parseLong(quantity),0);
+
+                    }
+
 
 
 
@@ -200,8 +230,6 @@ public class AddItemActivity extends AppCompatActivity {
         // create the alert dialog
         selectSubitemDialog = builder.create();
 
-        subitemEditText = (TextInputEditText) findViewById(R.id.add_item_subitem);
-
 
         subitemEditText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,8 +271,6 @@ public class AddItemActivity extends AppCompatActivity {
         // create the alert dialog
         selectUserDialog = builder2.create();
 
-        userEditText = (TextInputEditText) findViewById(R.id.add_item_user);
-
         userEditText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,8 +285,11 @@ public class AddItemActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putSerializable("itemType",itemType);
+        outState.putSerializable("itemToEdit",itemToEdit);
+
         outState.putInt("selectedItem",selectedItem);
         outState.putInt("selectedUser",selectedUser);
+
     }
 
     private CharSequence[] getSubitemsForCurrentType() {
@@ -285,6 +314,18 @@ public class AddItemActivity extends AppCompatActivity {
         }
 
         return usersArray;
+    }
+
+    private int indexOfUser(ArrayList<User> users_list, User user){
+
+        return users_list.indexOf(user);
+
+    }
+
+    private int indexOfSubItem(ArrayList<ItemTypeSubItem> subItems_list, ItemTypeSubItem subItem){
+
+        return subItems_list.indexOf(subItem);
+
     }
 
     private String getHintForItemId(long itemTypeId){
